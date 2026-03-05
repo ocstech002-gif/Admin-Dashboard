@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoices | SaaS Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- DataTable -->
+    <link
+      href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/invoices.css" />
+  </head>
+
+  <body>
+    <div id="pageLoader" class="page-loader">
+  <div class="spinner"></div>
+</div>
+    <div class="wrapper d-flex">
+      
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h4 class="logo">
+            <i class="bi bi-grid logo-icon"></i>
+            <span class="logo-text">SaaS<span>Admin</span></span>
+          </h4>
+        </div>
+
+        <ul class="menu">
+          <li>
+            <a href="/index.html"
+              ><i class="bi bi-speedometer2"></i><span> Dashboard</span></a
+            >
+          </li>
+          <li>
+            <a href="/pages/UserMaster.html"
+              ><i class="bi bi-people"></i><span> Users</span></a
+            >
+          </li>
+          <li class="active">
+            <a href="/pages/InvoiceMaster.html"
+              ><i class="bi bi-receipt"></i><span> Invoices</span></a
+            >
+          </li>
+          <li>
+            <a href="#" data-label="Subscription">
+              <i class="bi bi-box"></i> <span> Subscriptions </span></a
+            >
+          </li>
+          <li>
+            <a href="#" data-label="Billing">
+              <i class="bi bi-credit-card"></i> <span> Billing </span></a
+            >
+          </li>
+          <li>
+            <a href="#" data-label="Settings">
+              <i class="bi bi-gear"></i> <span> Settings </span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main">
+        <!-- TOPBAR -->
+        <nav class="topbar d-flex justify-content-between align-items-center">
+          <button class="btn btn-sm btn-light" id="toggleSidebar">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-outline-secondary" id="themeToggle">
+              <i class="bi bi-moon"></i>
+            </button>
+            <div class="dropdown">
+              <button
+                class="btn btn-sm btn-light position-relative"
+                data-bs-toggle="dropdown"
+              >
+                <i class="bi bi-bell"></i>
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                >
+                  3
+                </span>
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li class="dropdown-header">Notifications</li>
+                <li>
+                  <a class="dropdown-item" href="#">New user registered</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">Subscription upgraded</a>
+                </li>
+                <li><a class="dropdown-item" href="#">Payment received</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-center" href="#">View all</a>
+                </li>
+              </ul>
+            </div>
+            <div class="dropdown user-dropdown">
+              <a
+                href="#"
+                class="d-flex align-items-center text-decoration-none"
+                data-bs-toggle="dropdown"
+              >
+               <span class="me-2" id="userEmail">Admin</span>
+                <img
+                  src="/assets/images/user.png"
+                  class="rounded-circle user-avatar"
+                />
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                   <a class="dropdown-item text-danger" href="#" id="logoutBtn" data-logout>Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <!-- CONTENT -->
+        <div class="content p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Invoices</h5>
+            <button
+              class="btn btn-sm btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addInvoiceModal"
+            >
+              <i class="bi bi-plus"></i> Create Invoice
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <!-- Filters -->
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <input
+                    type="text"
+                    id="invoiceSearch"
+                    class="form-control form-control-sm"
+                    placeholder="Search invoice..."
+                  />
+                </div>
+
+                <div class="col-md-3">
+                  <select id="statusFilter" class="form-select form-select-sm">
+                    <option value="">All Status</option>
+                    <option>Paid</option>
+                    <option>Pending</option>
+                    <option>Overdue</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Table -->
+              <div class="table-responsive">
+                <table class="table table-hover custom-table" id="invoiceTable">
+                  <thead>
+                    <tr>
+                      <th>Invoice No</th>
+                      <th>Customer</th>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>GST</th>
+                      <th>Status</th>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>INV-1001</td>
+                      <td>Rahul Sharma</td>
+                      <td>2026-01-10</td>
+                      <td>12500</td>
+                      <td>0%</td>
+                      <td><span class="badge bg-success">Paid</span></td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-light view-btn">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light text-primary download-btn"
+                        >
+                          <i class="bi bi-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light edit-btn">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light text-danger delete-btn"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>INV-1002</td>
+                      <td>Anita Verma</td>
+                      <td>2026-01-10</td>
+                      <td>8000</td>
+                      <td>0%</td>
+                      <td><span class="badge bg-warning">Pending</span></td>
+                      <td class="text-end">
+                        <button class="btn btn-sm btn-light view-btn">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light text-primary download-btn">
+                          <i class="bi bi-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light edit-btn">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-light text-danger delete-btn"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!----------------------- add invoice modal ----------------------------->
+
+          <div class="modal fade" id="addInvoiceModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Invoice</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label class="form-label">Invoice No</label>
+                      <input type="text" id="invoiceNo" class="form-control" />
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label">Customer Name</label>
+                      <input
+                        type="text"
+                        id="customerName"
+                        class="form-control"
+                      />
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label">Invoice Date</label>
+                      <input
+                        type="date"
+                        id="invoiceDate"
+                        class="form-control"
+                      />
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="form-label">Amount</label>
+                      <input
+                        type="number"
+                        id="invoiceAmount"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="col md-4">
+                      <label class="form-label">GST Rate</label>
+                      <select id="invoiceGstRate" class="form-select">
+                        <option value="0">0 (No GST)</option>
+                        <option value="5">5</option>
+                        <option value="12">12</option>
+                        <option value="18">18</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Status</label>
+                      <select id="invoiceStatus" class="form-select">
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                  </button>
+                  <button class="btn btn-primary" id="saveInvoiceBtn">
+                    Save Invoice
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!----------------------- View invoice modal ----------------------------->
+          <div class="modal fade" id="viewInvoiceModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Invoice Preview</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+
+                <div class="modal-body">
+                  <div id="invoicePdfContent" class="invoice-box">
+                    <div class="invoice-header">
+                      <div>
+                        <h2 class="company-name">HanuSoft Solution</h2>
+                        <p class="company-address">
+                          Shani Mandir Road, Kelnia<br />
+                          Sirsa, Haryana
+                        </p>
+                        <p class="gst-text">
+                          GSTIN: <span class="text-muted">Not Registered</span>
+                        </p>
+                      </div>
+
+                      <div class="invoice-meta">
+                        <h3>INVOICE</h3>
+                        <p>
+                          <strong>Invoice No:</strong>
+                          <span id="viewInvoiceNo"></span>
+                        </p>
+                        <p>
+                          <strong>Date:</strong>
+                          <span id="viewInvoiceDate"></span>
+                        </p>
+                        <span
+                          id="viewInvoiceStatus"
+                          class="status-badge pending"
+                          >Pending</span
+                        >
+                      </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="bill-section">
+                      <div>
+                        <h5>Billed To</h5>
+                        <p id="viewCustomerName"></p>
+                        <p id="viewCustomerEmail"></p>
+                      </div>
+                    </div>
+
+                    <table class="invoice-table">
+                      <thead>
+                        <tr>
+                          <th>Description</th>
+                          <th class="text-right">Amount (₹)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Service Charges</td>
+                          <td class="text-right" id="viewInvoiceAmount"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <div class="total-section">
+                      <p>
+                        Subtotal: <strong id="viewInvoiceSubtotal"></strong>
+                      </p>
+                      <p>GST (%): <strong id="viewInvoiceGST"></strong></p>
+                      <h4>Total: <span id="viewInvoiceTotal"></span></h4>
+                    </div>
+
+                    <hr />
+
+                    <p class="invoice-footer">
+                      This is a computer generated invoice.<br />
+                      Thank you for your business!
+                    </p>
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button class="btn btn-primary" id="downloadInvoicePdf">
+                    <i class="bi bi-download"></i> Download PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+  <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/invoices.js"></script>
+    <script src="/assets/vendors/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/loader.css" />
+
+<script src="/assets/js/loader.js"></script>
+<script src="/assets/js/guard.js"></script>
+<script src="/assets/js/auth.js"></script>
+  </body>
+</html>

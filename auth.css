@@ -1,0 +1,73 @@
+
+body.auth-bg {
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.2);
+}
+
+.auth-logo {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.auth-logo span {
+  color: #4f46e5;
+}
+
+.auth-title {
+  font-weight: 600;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.auth-footer {
+  font-size: 14px;
+}
+
+
+.forgot-card {
+  background: #ffffff !important;
+  color: #111827;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.forgot-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.forgot-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.forgot-card .form-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.forgot-card .auth-footer {
+  margin-top: 18px;
+  text-align: center;
+}
